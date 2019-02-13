@@ -1,0 +1,116 @@
+<meta charset="UTF-8"> 
+
+<div id="main">
+MAIN
+<input type="text" name="fname"><br>
+</div>
+
+<div id="search">
+	<ul id="search-results">
+	</ul>
+</div>
+
+<div id="word">
+<p><b>Word:</b> <span id="prins"></span></p>
+<p><b>Meaning:</b> <span id="meaning"></span></p>
+<p><b>Part of Speech:</b> <span id="pos"></span></p>
+<p><b>In Vocab List<span id="listplural"></span>:</b> <span id="stages"></span></p>
+
+</div>
+
+<script src="file:///C:/Users/Charlie/Desktop/data.js"></script>
+
+<script charset="utf-8">
+
+var urlParams = new URLSearchParams(window.location.search);
+var query = urlParams.toString().slice(0, -1)
+var main = document.getElementById("main");
+var search = document.getElementById("search");
+var word = document.getElementById("word");
+var p1 = []
+var p2 = []
+var p3 = []
+
+main.style.display = "none";
+search.style.display = "none";
+word.style.display = "none";
+
+query = query.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+
+function startString (little,big) {
+	if (typeof big == "object") {
+	  for (i in big) {
+		  if (little == big[i].substring(0,little.length)) {
+			  return true;
+			}
+		}
+		return false;
+	} else if (little == big.substring(0,little.length)) {
+		return true;
+	} else {
+		return false;
+	}
+}	
+
+if (query == "") {
+	main.style.display = "block";
+} else if (wordlist.indexOf(query) == -1){
+	var results = []
+	for (x in wdict) {
+		prins = wdict[x][1].replace(/,/g,", ").normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+		trans = wdict[x][2].normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+		if (startString(query, prins)) {
+			p1.push(wdict[x]);
+		} else if (startString(query, prins.split(", "))) {
+			p2.push(wdict[x]);
+		} else if (startString(query, trans.split(","))) {
+			p3.push(wdict[x]);
+		}
+	}
+	
+  results = p1.concat(p2.concat(p3))
+	
+	function addResult (pp, ref, mng) {
+		var node = document.createElement("LI");
+		var termlink = document.createElement("A");
+		termlink.innerHTML = pp;
+		termlink.href = "?" + ref;
+		node.appendChild(termlink);
+		node.appendChild(document.createTextNode(" " + mng));
+		document.getElementById("search-results").appendChild(node);
+	}
+	
+	for (x in results) {
+		addResult(results[x][1].replace(/,/g,", "), results[x][0], results[x][2].replace(/,/g,", "));
+  }
+  
+  search.style.display = "block";
+	
+} else {
+
+	winfo = wdict[wordlist.indexOf(query)]
+	
+	var outputs = [];
+	outputs.push(winfo[1].replace(/,/g,", "));
+	outputs.push(winfo[2].replace(/,/g,", "));
+	outputs.push(["Adjective","Conjunction","Adverb","Interjection","Noun","Preposition","Interrogative","Verb","Common Latin phrase"][["a","c","y","i","n","p","q","v","s"].indexOf(winfo[3])])
+	outputs.push(winfo[4].replace(/,/g,", "));
+	if (outputs[3].split(",").length == 1) {
+	  outputs.push("");
+	} else {
+	  outputs.push("s");
+	}
+	
+	document.getElementById('prins').innerHTML = outputs[0];
+	document.getElementById('meaning').innerHTML = outputs[1];
+	document.getElementById('pos').innerHTML = outputs[2];
+	document.getElementById('stages').innerHTML = outputs[3];
+	document.getElementById('listplural').innerHTML = outputs[4];
+	
+	
+	word.style.display = "block";
+}
+
+
+
+</script>
