@@ -1,46 +1,56 @@
-<meta charset="UTF-8"> 
+<head>
+	<meta charset="UTF-8"> 
+	<title>Grumio - Latin-English Dictionary</title>
+	<link rel="stylesheet" href="style.css">
+	<link href="https://fonts.googleapis.com/css?family=Quando" rel="stylesheet">
 
-<div id="main">
-MAIN
-<input type="text" name="fname"><br>
+</head>
+
+<body>
+
+<div id="main" class="inner-element">
+  <h1>Grumio</h1>
+	<h3>A Latin-English Dictionary</h3>
+	<input type="text" name="q" id="searchbox" class="searchinput" placeholder="Type English or Latin. Don't worry about long marks."><br>
 </div>
 
-<div id="search">
-	<ul id="search-results">
-	</ul>
+<div id="word" class="inner-element">
+<p><b><span id="prins"></span></b></p>
+<p><span id="meaning"></span></p>
+<hr>
+
+<br>
+<table>
+  <tr>
+    <th>Part of Speech</th>
+    <td><span id="pos"></span></td>
+  </tr>
+  <tr>
+    <th>In Vocab List<span id="listplural"></span></th>
+    <td><span id="stages"></span></td>
+  </tr>
+</table>
+<br>
+<p><a href="index.html">Back to search</a></p>
 </div>
 
-<div id="word">
-<p><b>Word:</b> <span id="prins"></span></p>
-<p><b>Meaning:</b> <span id="meaning"></span></p>
-<p><b>Part of Speech:</b> <span id="pos"></span></p>
-<p><b>In Vocab List<span id="listplural"></span>:</b> <span id="stages"></span></p>
 
-</div>
+</body>
 
 <script src="data.js"></script>
+<script src="auto-complete.js"></script>
 
 <script charset="utf-8">
 
-var urlParams = new URLSearchParams(window.location.search);
-var query = urlParams.toString().slice(0, -1)
 var main = document.getElementById("main");
-var search = document.getElementById("search");
 var word = document.getElementById("word");
-var p1 = []
-var p2 = []
-var p3 = []
 
-main.style.display = "none";
-search.style.display = "none";
-word.style.display = "none";
-
-query = query.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+document.getElementById('searchbox').value = "";
 
 function startString (little,big) {
 	if (typeof big == "object") {
-	  for (i in big) {
-		  if (little == big[i].substring(0,little.length)) {
+	  for (yoink in big) {
+		  if (little == big[yoink].substring(0,little.length)) {
 			  return true;
 			}
 		}
@@ -52,40 +62,57 @@ function startString (little,big) {
 	}
 }	
 
+function getID (peepee) {
+	for (poopoo in wdict) {
+		if (wdict[poopoo][1] == peepee) return wdict[poopoo][0];
+	}
+}	
+
+new autoComplete({
+    selector: 'input[name="q"]',
+    minChars: 1,
+    source: function(term, suggest){
+        term = term.toLowerCase();
+				term = term.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        var choices = choicebois;
+        var matches = [];
+        for (i=0; i<choices.length; i++) {
+						if (startString(term,choices[i][0].normalize('NFD').replace(/[\u0300-\u036f]/g, ""))) matches.push(choices[i]);
+				}
+				for (i=0; i<choices.length; i++) {
+				    pps = choices[i][0].normalize('NFD').replace(/[\u0300-\u036f]/g, "").split(", ")
+						if (startString(term,pps.slice(1,pps.length)) && !matches.includes(choices[i])) matches.push(choices[i]);
+				}
+				for (i=0; i<choices.length; i++) {
+				    pps = choices[i][1].normalize('NFD').replace(/[\u0300-\u036f]/g, "").split(", ")
+						if (startString(term,pps) && !matches.includes(choices[i])) matches.push(choices[i]);
+				}
+        suggest(matches);
+    },
+		renderItem: function (item, search) {
+			return '<div class="autocomplete-suggestion" data-val="' + item[0] + '"><b>' + item[0] + '</b>  ' + item[1] + '</div>';
+		},
+		onSelect: function(e, term, item){
+			window.location.href = "?" + getID(term.replace(/, /g,","));
+    }
+});
+
+var urlParams = new URLSearchParams(window.location.search);
+var query = urlParams.toString().slice(0, -1)
+var p1 = []
+var p2 = []
+var p3 = []
+
+
+
+query = query.normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+
+
+
 if (query == "") {
 	main.style.display = "block";
 } else if (wordlist.indexOf(query) == -1){
-	var results = []
-	for (x in wdict) {
-		prins = wdict[x][1].replace(/,/g,", ").normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-		trans = wdict[x][2].normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-		if (startString(query, prins)) {
-			p1.push(wdict[x]);
-		} else if (startString(query, prins.split(", "))) {
-			p2.push(wdict[x]);
-		} else if (startString(query, trans.split(","))) {
-			p3.push(wdict[x]);
-		}
-	}
-	
-  results = p1.concat(p2.concat(p3))
-	
-	function addResult (pp, ref, mng) {
-		var node = document.createElement("LI");
-		var termlink = document.createElement("A");
-		termlink.innerHTML = pp;
-		termlink.href = "?" + ref;
-		node.appendChild(termlink);
-		node.appendChild(document.createTextNode(" " + mng));
-		document.getElementById("search-results").appendChild(node);
-	}
-	
-	for (x in results) {
-		addResult(results[x][1].replace(/,/g,", "), results[x][0], results[x][2].replace(/,/g,", "));
-  }
-  
-  search.style.display = "block";
-	
+	window.location.href = "?"
 } else {
 
 	winfo = wdict[wordlist.indexOf(query)]
