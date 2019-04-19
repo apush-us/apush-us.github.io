@@ -1,0 +1,390 @@
+<!doctype html>
+<html>
+	<head>
+		<title>circlepacker</title>
+	</head>
+	<style>
+		body { color: #666; font-family: sans-serif; font-size: 16px; background: #ffd8ff}
+		a { color: #06f; text-decoration: none; }
+		a:hover { text-decoration: underline; }
+		h3 { padding-top: 10px }
+		.text { width: 300px; margin-bottom: 30px; }
+		.container { width: 90vw; height: 80vh; background: #ffd8ff; position: relative; margin: auto;}
+		.circle { background-color: #666; position: absolute; top: 0; left: 0; display: none; 
+    -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+		.circle.is-visible { display: block; cursor: pointer; }
+		.circle:hover { background-color: #000 }
+		.range-container { margin-top: 20px; }
+		
+		.bctitle {
+			color: white;
+			text-align: center;
+			vertical-align: middle;
+			position: relative; 
+			top: 30%; 
+		}
+		
+		.modal {
+			display: none;
+			position: fixed;
+			z-index: 1;
+			padding-top: 50px;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgb(0,0,0);
+			background-color: rgba(0,0,0,0.4);
+		}
+
+		.modal-content {
+			position: relative;
+			background-color: #fefefe;
+			margin: auto;
+			padding: 30px;
+			border: 1px solid #888;
+			width: 80%;
+			box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+			-webkit-animation-name: animatetop;
+			-webkit-animation-duration: 0.4s;
+			animation-name: animatetop;
+			animation-duration: 0.4s
+		}
+
+		@-webkit-keyframes animatetop {
+			from {top:-300px; opacity:0} 
+			to {top:0; opacity:1}
+		}
+
+		@keyframes animatetop {
+			from {top:-300px; opacity:0}
+			to {top:0; opacity:1}
+		}
+
+		.close {
+			color: black;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+			padding: 3px 10px;
+		}
+
+		.close:hover,
+		.close:focus {
+			color: #999;
+			text-decoration: none;
+			cursor: pointer;
+		}
+
+		.modal-body {padding: 2px 16px;}
+
+	</style>
+	<body>
+		<p class="container"></p>
+		<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+	<span class="close">&times;</span>
+    <div class="modal-body">
+      <h1 id="titlec"></p>
+      <h3>Type</h3>
+	  <p id="typec"></p>
+	  <h3>What is it?</h3>
+	  <p id="wiic"></p>
+	  <h3>How efective is it?</h3>
+	  <p id="effectivec"></p>
+	  <h3>Cost</h3>
+	  <p id="costc"></p>
+	  <h3>Pros and Cons</h3>
+	  <p id="pcc"></p>
+	  <iframe id="ytc" width="560" height="315" src="" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+  </div>
+
+</div>
+		<script src="circlepacker.min.js"></script>
+		<script>
+var DRAG_THRESOLD = 10;
+
+var containerEl = document.querySelector( '.container' );
+var addButtonEl = document.querySelector( '#add-circle' );
+var deleteButtonEl = document.querySelector( '#delete-circle' );
+var randomButtonEl = document.querySelector( '#random-size' );
+var shouldShowBC = true;
+
+// Get the modal
+var modal = document.getElementById('myModal');
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+function renderBC ( id ) {
+	if (shouldShowBC) {
+		
+		document.getElementById("ytc").src = "https://youtube.com/embed/" + bc[id][3]
+		document.getElementById("titlec").innerHTML = bc[id][0]
+		document.getElementById("typec").innerHTML = bc[id][2]
+		document.getElementById("wiic").innerHTML = bc[id][4]
+		document.getElementById("effectivec").innerHTML = bc[id][5]
+		document.getElementById("costc").innerHTML = bc[id][6]
+		document.getElementById("pcc").innerHTML = bc[id][7]
+		
+		document.getElementById("ytc").style.display = "block";
+		
+		
+		modal.style.display = "block";
+	}
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+
+var bc = [
+	['Birth Control Implant',99,'Low Maintenance ','OmNkfA-Vwy8','The Implant is a small rod that is implanted into your arm that releases hormones that prevent the body from getting pregnant. The implant can last up to 5 years and is always inserted by a doctor or nurse.','99% effective','$0-1300 depending on insurance','Implants are super effective and require zero maintenance.  ⅓ of of people with the period stop getting their period one year after getting the implant. The majority of people with the implant also report less period cramps. Cons are that some people experience irregular bleeding during the first year after receiving the implant and that the implant cannot prevent STDs.'],
+	['IUD',99,'Low Maintenance ','eXdNHlWkleA','An IUD or Intrauterine Device is a small piece of plastic shaped like a T that is is put into your uterus by a doctor or nurse. IUDs come in two types, copper or hormonal. Copper IUDs prevents pregnancy because copper is a spermicide. A copper IUD can last up to 12 years. A hormonal uses a hormone called progestin to prevent pregnancy. An IUD does not protect against STDs.','99% effective','$0-1300 depending on insurance','One of the best parts of IUDs is that they are very long lasting and very effective at preventing pregnancy. IUDs are also very convenient because it does not require upkeep. You can “get it and forget it.” The cons is that some experience pain while having the IUD inserted and some experience irregular periods.'],
+	['Birth Control Shot',94,'Used on a Schedule','z2pAQytp-Cc','The birth control shot (also called the depo shot) is an injection that you get once every 3 months. The shot can be injected by a nurse a doctor or yourself at home. The shot contains the hormone progestin which prevents ovulation. It also makes cervical mucus thicker making it harder for sperm to get through. The shot does not protect against STDs.','94% effective','$0-100 depending on insurance','Some pros of the shot are that getting it is private and convenient and some users reported lighter and less often periods. The shot can also help protect you from cinder or the uterus and ectopic pregnancy (when a pregnancy grows outside of your uterus and can be very dangerous). A disadvantage of the shot is that you have to get it every 3 months because the shot only works if you get it on time. It could also take up to 10 months after stopping the shot to get pregnant.'],
+	['Vaginal Ring',94,'Used on a Schedule','mkSakVCq9tg','The birth control ring is a small flexible ring inserted into the vagina  that prevents pregnancy by releasing estrogen and progestin. You can insert new rings yourself on a schedule. Rings have to be replaced regularly in order to be effective. The ring does not prevent against STDs.','If used perfectly, the ring is 99% effective. But in reality, it is closer to 91% effective because most people do not use it perfectly.','$0-100 depending on insurance','A pro of the Nuvaring is that it makes periods very regular and can reduce menstrual cramps. A disadvantage is that you have to be on time every month when switching out the ring to get it to work. '],
+	['Birth Control Patch',91,'Used on a Schedule','jpOPRCKQixE','The patch is a transdermal contraceptive patch that is placed on your belly, back, upper arm or butt. You put on a new patch every week for three weeks out of the month. Then on the fourth week you get your period. The patch stops pregnancy by releasing estrogen and progestin. The patch does not protect against STDS','91% effective','$0-150 depending on insurance','The patch is very convenient because it can be applied yourself. It also helps make periods more regular. The con is that in order for the patch to work you must always change it on time.'],
+	['Birth Control Pill',91,'Used on a Schedule','jIolmLbBiw0','Birth control pills are a pill that you take every day that uses hormones to stop pregnancy. In order for the pills to work they must be taken every day they do not prevent STDs.','91% effective','$0-50 depending on insurance','The pros of birth control pills is that the pill is convenient and affordable. They also generally make periods much lighter or stop periods all together. A con is that the pill can be hard to remember to take. The effectiveness of the pill is determined by if you are able to take the pill every day. '],
+	['External Condom',85,'Used every time you have sex','Eh5HK3F42IU','Condoms are thin stretchy pouches that you wear on your penis during sex. Condoms provide protection from both pregnancy and STDs. Condoms are made of either latex or polyurethane and stop sperm from getting into the vagina during sex. ','85% effective','$0-2 depending on insurance','A pro of condoms is that they are cheap and easy to use. They also protect from STDs. Some cons are that they must be used every time for them to work.'],
+	['Internal Condom',79,'Used every time you have sex','YSisMvTw-po','Internal condoms are are similar to external condoms but instead of covering a penis they go inside of the vagina for pregnancy and std protection. For a long time internal condoms were called female condoms but people of all genders can use them for vaginal or anal sex. Internal condoms are small soft plastic pouches that you put inside the vagina that creates a barrier preventing sperm from reaching an egg. Internal condoms prevent STDs. ','79% effective','$0-3 depending on insurance','A pro of an internal condom is that it protects you from both pregnancy and STDs. They are also latex free. A con is that it must be used every time you have sex for it to work.'],
+	['Diaphragm',88,'Used every time you have sex','X2-sLOf_Xe8','A diaphragm is a shallow bendable cup that you put inside your vagina. The diaphragm covers the cervix during sex to prevent pregnancy. You can also add spermicide (see below) to your diaphragm,  wore putting it in your vagina to make it more effective. A diaphragm does not prevent against STDs. ','88% effective','$0-75 depending on insurance','A pro of diaphragms is that they can be inserted before sex. You can put a diaphragm in up to two hours before you have sex. Diaphragms can also continue to be reused for up to two years. A con is that it must be used every time you have sex. They can also be hard to use correctly. Some people have a hard time inserting them and they can move during sex. Also diaphragms do not work as well without spermicide. '],
+	['Birth Control Sponge',82,'Used every time you have sex','VrwpX1EgQck','The birth control sponge is a small round soft squishy sponge that is out deep inside of the vagina before sex. The sponge covers your cervix and contains spermicide in order to prevent pregnancy. The sponge does not prevent against STDs.','76%-88% effective','$0-15 depending on insurance','A pro of the sponge is that it does not need to be prescribed and is stocked at most drug stores. Once you put in the sponge you can have protected sex as many times as you want for 24 Hours. They also do not interrupt sex because they can be put into the vagina before sex. It is also a great hormone free kind of broth control. A con is that it must be used every time and that people can have trouble inserting the sponge.'],
+	['Cervical Cap',79,'Used every time you have sex','X2-sLOf_Xe8','A vertical cap is a cup made out of soft silicone that is put deep into the vagina to cover the cervix. You can add spermicide to your cervical cap to make to more effective. They are smaller than diaphragm  and shaped differently. You can also leave a cervical cap in for longer than you can a diaphragm. You can leave a cervical cap in for up to two days. They do not protect against STDs.','71%-86% effective','$0-90 depending on insurance','A pro is that they are convenient reusable and hormone free. The  can also be inserted in the vagina before sex. A con is that it they have to be used every time you have sex and do not prevent STDs. '],
+	['Spermicide',71,'Used every time you have sex','89WzRgrzEws','Spermicide is a kind of chemical that stops sperm from reaching an egg. You put it into your vagina before sex. It can be used by itself or combined with other birth control menthols. It can come in bells creams and foams. It does not prevent against STDs. ','71% effective','$0-8 depending on insurance','A pro is that it is convenient and cheap. It also does not interrupt sex because it can be inserted into the vagina before sex. Spermicide also does not contain hormones. A con is that it has to be used every time you have sex, it can also irritate some people with sensitive skin. It also does not protect against STDs. ']
+]
+
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    if (evt.keyCode == 27) {
+		modal.style.display = "none";
+    }
+};
+
+// references to all circle elements
+var circleEls = { };
+
+// dimenstions of container
+var rect = containerEl.getBoundingClientRect();
+var bounds = { width: rect.width, height: rect.height };
+var target = { x: bounds.width / 2, y: bounds.height / 2 };
+
+var isDragging = false;
+
+var circles = [];
+
+
+function isClickable() {
+  setTimeout(function () {
+		shouldShowBC = true;
+  }, 500);
+}
+
+for (var i = 0; i < bc.length; i++) {
+	circles.push(createCircle((bc[i][1] - 20),bc[i][0],i))
+}
+
+var packer = new CirclePacker( {
+	bounds: bounds,
+	target: target,
+	circles: circles,
+	onMove: render,
+	collisionPasses: 3,
+	centeringPasses: 2
+} );
+
+// create circle dom object, return circle data
+function createCircle ( radius, bcname, bcid ) {
+	radius = radius || random( 10, 40 );
+	x = random( radius, bounds.width - radius );
+	y = random( radius, bounds.height - radius );
+
+	var diameter = radius * 2;
+	var circleEl = document.createElement( 'div' );
+	
+	var tag = document.createElement("p")
+	tag.innerHTML = bcname
+	tag.className = "bctitle"
+	circleEl.appendChild(tag)
+	
+	circleEl.onclick = function() { renderBC(bcid); };
+
+	
+	// need some sort of unique id...
+	var id = 'circle-' + random( 0, 1000, true ) + '-' + Date.now();
+
+	var circle =  {
+		id: id,
+		radius: radius,
+		position: {
+			x: random( radius, bounds.width - radius ),
+			y: random( radius, bounds.height - radius )
+		}
+	};
+
+	// create circle el
+	
+	circleEl.id = id;
+	circleEl.style.width = diameter + 'px';
+	circleEl.style.height = diameter + 'px';
+	circleEl.style.borderRadius = diameter + 'px';
+	circleEl.classList.add( 'circle' );
+
+	// store position for dragging
+	circleEl.setAttribute( 'data-x', x );
+	circleEl.setAttribute( 'data-y', y );
+	circleEl.setAttribute( 'data-radius', radius );
+
+	// start dragging
+	circleEl.addEventListener( 'mousedown', function ( event ) {
+		circlePressed( circleEl, circle, event );
+	} );
+	
+	containerEl.appendChild( circleEl );
+
+	circleEls[id] = circleEl;
+
+	return circle;
+}
+
+function removeRandomCircle () {
+	var ids = Object.keys( circleEls );
+	var idToDelete = ids[random( 0, ids.length, true )];
+
+	removeCircle( idToDelete );
+}
+
+function setRandomBounds () {
+	bounds = {
+		width: random( 200, 500, true ),
+		height: random( 200, 500, true )
+	};
+
+	containerEl.style.width = bounds.width + 'px';
+	containerEl.style.height = bounds.height + 'px';
+
+	packer.setBounds( bounds );
+}
+
+function removeCircle ( id ) {
+	packer.removeCircle( id );
+	
+	requestAnimationFrame( function () {
+		containerEl.removeChild( circleEls[id] );
+		delete circleEls[id];
+	} );
+}
+
+function render ( circles ) {
+	requestAnimationFrame( function () {
+		for ( var id in circles ) {
+			var circleEl = circleEls[id];
+
+			if ( circleEl ) {
+				var circle = circles[id];
+				var x = circle.position.x - circle.radius;
+				var y = circle.position.y - circle.radius;
+			
+				// store position for dragging
+				circleEl.setAttribute( 'data-x', x );
+				circleEl.setAttribute( 'data-y', y );
+				
+				// actually move the circles around
+				circleEl.style.transform = 'translateX(' + x + 'px) translateY(' + y + 'px)';
+				circleEl.classList.add( 'is-visible' );
+			}
+		}
+	} );
+}
+
+// start and stop dragging
+function circlePressed ( circleEl, circle, event ) {
+	var circleStartPos = {
+		x: parseFloat( circleEl.getAttribute( 'data-x' ) ) + circle.radius,
+		y: parseFloat( circleEl.getAttribute( 'data-y' ) ) + circle.radius
+	};
+
+	var eventStartPos = { x: event.clientX, y: event.clientY };
+	
+	function dragStart () {
+		document.addEventListener( 'mousemove', dragged );
+		document.addEventListener( 'mouseup', dragEnd );
+	}
+
+	function dragged ( event ) {
+		var currentPos = { x: event.clientX, y: event.clientY };
+
+		var delta = {
+			x: currentPos.x - eventStartPos.x,
+			y: currentPos.y - eventStartPos.y
+		};
+
+		// start dragging if mouse moved DRAG_THRESOLD px
+		if ( ! isDragging &&
+			( Math.abs( delta.x ) > DRAG_THRESOLD || Math.abs( delta.y ) > DRAG_THRESOLD )
+		) {
+			isDragging = true;
+			shouldShowBC = false;
+			packer.dragStart( circle.id );
+		}
+
+		var newPos = { x: circleStartPos.x + delta.x, y: circleStartPos.y + delta.y };
+
+		if ( isDragging ) {
+			// end dragging if circle is outside the bounds
+			if (
+				newPos.x < circle.radius || newPos.x > bounds.width - circle.radius ||
+				newPos.y < circle.radius || newPos.y > bounds.height - circle.radius
+			) {
+				dragEnd();
+			} else {
+				packer.drag( circle.id, newPos );
+			}
+		}
+	}
+
+	function dragEnd () {
+		isDragging = false;
+		isClickable();
+		document.removeEventListener( 'mousemove', dragged );
+		packer.dragEnd( circle.id );
+	}
+
+	if ( ! isDragging ) {
+		dragStart();
+	}
+}
+
+function random ( min, max, intResult ) {
+	if ( typeof min !== 'number' && typeof max !== 'number' ) {
+		min = 0;
+		max = 1;
+	}
+
+	if ( typeof max !== 'number' ) {
+		max = min;
+		min = 0;
+	}
+
+	var result = min + Math.random() * ( max - min );
+
+	if ( intResult ) {
+		result = parseInt( result, 10 );
+	}
+
+	return result;
+}
+		</script>
+	</body>
+</html>
