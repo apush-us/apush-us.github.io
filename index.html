@@ -10,14 +10,14 @@
 		h3 { padding-top: 10px }
 		.text { width: 300px; margin-bottom: 30px; }
 		.container { width: 90vw; height: 80vh; background: #ffd8ff; position: relative; margin: auto;}
-		.circle { background-color: #666; position: absolute; top: 0; left: 0; display: none; 
+		.circle { background-color: #eee; position: absolute; top: 0; left: 0; display: none; 
     -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
 		.circle.is-visible { display: block; cursor: pointer; }
-		.circle:hover { background-color: #000 }
+		.circle:hover { background-color: #ddd }
 		.range-container { margin-top: 20px; }
 		
 		.bctitle {
-			color: white;
+			color: 111;
 			text-align: center;
 			vertical-align: middle;
 			position: relative; 
@@ -78,10 +78,30 @@
 		}
 
 		.modal-body {padding: 2px 16px;}
+		
+.myButton {
+	box-shadow: 0px 0px 4px 0px #a8a8a8;
+	background-color:#eeeeee;
+	border-radius:28px;
+	border: 0px solid #eeeeee
+	display:inline-block;
+	cursor:pointer;
+	color:#000000;
+	font-size:17px;
+	padding:16px 31px;
+	text-decoration:none;
+}
+.myButton:hover {
+	background-color:#dddddd;
+}
 
 	</style>
 	<body>
 		<p class="container"></p>
+		<button class="myButton" onclick="changeSetup([0,1])">Low Maintenance</button>
+		<button class="myButton" onclick="changeSetup([2,3,4,5])">Used on a Schedule</button>
+		<button class="myButton" onclick="changeSetup([6,7,8,9,10,11])">Used every time you have sex</button>
+		<button class="myButton" onclick="changeSetup([0,1,2,3,4,5,6,7,8,9,10,11])">All</button>
 		<div id="myModal" class="modal">
 
   <!-- Modal content -->
@@ -109,9 +129,6 @@
 var DRAG_THRESOLD = 10;
 
 var containerEl = document.querySelector( '.container' );
-var addButtonEl = document.querySelector( '#add-circle' );
-var deleteButtonEl = document.querySelector( '#delete-circle' );
-var randomButtonEl = document.querySelector( '#random-size' );
 var shouldShowBC = true;
 
 // Get the modal
@@ -258,13 +275,6 @@ function createCircle ( radius, bcname, bcid ) {
 	return circle;
 }
 
-function removeRandomCircle () {
-	var ids = Object.keys( circleEls );
-	var idToDelete = ids[random( 0, ids.length, true )];
-
-	removeCircle( idToDelete );
-}
-
 function setRandomBounds () {
 	bounds = {
 		width: random( 200, 500, true ),
@@ -364,6 +374,17 @@ function circlePressed ( circleEl, circle, event ) {
 	if ( ! isDragging ) {
 		dragStart();
 	}
+}
+
+function changeSetup ( newcirs ) {
+	for (var i = 0; i < Object.keys( circleEls ).length; i++) {
+		removeCircle(Object.keys( circleEls )[i]);
+	}
+	
+	for (var i = 0; i < newcirs.length; i++) {
+		packer.addCircle(createCircle((bc[newcirs[i]][1] - 20),bc[newcirs[i]][0],newcirs[i]))
+	}
+	
 }
 
 function random ( min, max, intResult ) {
